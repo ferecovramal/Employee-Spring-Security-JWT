@@ -1,11 +1,8 @@
 package net.javaguides.java_ems.service;
 
 import net.javaguides.java_ems.dto.EmployeeDto;
-import net.javaguides.java_ems.entity.Employee;
-import net.javaguides.java_ems.entity.Language;
 
 import java.util.List;
-import java.util.Set;
 
 public interface EmployeeService {
     EmployeeDto createEmployee(EmployeeDto employeeDto);
@@ -20,6 +17,6 @@ public interface EmployeeService {
     List<EmployeeDto> getAllEmployees();
     EmployeeDto updateEmployee(Long EmployeeId, EmployeeDto updateEmployee);
     void deleteEmployee(Long employeeId);
-    void addLanguageToEmployee(Long employeeId, Long languageId);
-    List<Employee> findEmployeesByLanguageId(Long languageId);
+    void updateEmployeePassword(Long employeeId, String newPassword);
+
 }

@@ -73,4 +73,11 @@ public class GlobalExceptionHandler {
         error.put("error", ex.getMessage());
         return error;
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PasswordException.class)
+    public Map<String,String> PasswordException(PasswordException ex){
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return error;
+    }
 }

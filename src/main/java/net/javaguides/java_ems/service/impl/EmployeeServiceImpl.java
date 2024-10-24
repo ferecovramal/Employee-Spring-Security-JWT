@@ -1,22 +1,17 @@
 package net.javaguides.java_ems.service.impl;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.javaguides.java_ems.dto.EmployeeDto;
-import net.javaguides.java_ems.dto.LanguageDTO;
 import net.javaguides.java_ems.entity.Employee;
-import net.javaguides.java_ems.entity.Language;
 import net.javaguides.java_ems.exception.*;
 import net.javaguides.java_ems.mapper.EmployeeMapper;
 import net.javaguides.java_ems.repository.EmployeeRepository;
-import net.javaguides.java_ems.repository.LanguageRepository;
 import net.javaguides.java_ems.service.EmployeeService;
 import net.javaguides.java_ems.service.LanguageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +19,9 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-
     private final LanguageService languageService;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -46,10 +42,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 
-        if (employeeDto.getLanguageId() != null) {
-            Language language = languageService.findLanguageById(employeeDto.getLanguageId());
-            employee.setLanguage(language);
+        if (employeeDto.getPassword() != null && !employeeDto.getPassword().isEmpty()) {
+            employee.setPassword(passwordEncoder.encode(employeeDto.getPassword()));
+        } else {
+            throw new PasswordException("8 simvoldan az ola bilmez");
         }
+
         Employee savedEmployee = employeeRepository.save(employee);
         return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
@@ -173,19 +171,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.deleteById(employeeId);
     }
 
-    @Override
-    public void addLanguageToEmployee(Long employeeId, Long languageId) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
 
-        Language language = languageService.findLanguageById(languageId);
+    public void updateEmployeePassword(Long id, String newPassword) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 
-        employee.setLanguage(language);
+        if (newPassword != null && !newPassword.isEmpty()) {
+            employee.setPassword(passwordEncoder.encode(newPassword));
+        } else {
+            throw new PasswordException("Password cannot be empty");
+        }
+
         employeeRepository.save(employee);
     }
 
-    @Override
-    public List<Employee> findEmployeesByLanguageId(Long languageId) {
-        return employeeRepository.findByLanguageId(languageId);
-    }
 }

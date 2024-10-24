@@ -2,7 +2,6 @@ package net.javaguides.java_ems.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import net.javaguides.java_ems.dto.LanguageDTO;
-import net.javaguides.java_ems.entity.Employee;
 import net.javaguides.java_ems.entity.Language;
 import net.javaguides.java_ems.exception.ResourceNotFoundException;
 import net.javaguides.java_ems.repository.EmployeeRepository;
@@ -68,24 +67,6 @@ public class LanguageServiceImpl implements LanguageService {
                 updatedLanguage.getEn());
     }
 
-    @Override
-    public void addLanguagesToEmployee(Long employeeId, Long languageId) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
-
-        Language language = languageRepository.findById(languageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Language not found with id: " + languageId));
-
-        employee.setLanguage(language);
-
-        employeeRepository.save(employee);
-    }
-
-    @Override
-    public Language findLanguageById(Long languageId) {
-        return languageRepository.findById(languageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Language not found with id: " + languageId));
-    }
 
     @Override
     public void deleteLanguage(Long id) {

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.javaguides.java_ems.entity.Language;
+
 
 @Getter
 @Setter
@@ -20,5 +20,5 @@ public class EmployeeDto {
     private Double salary;
     private String phoneNumber;
     private String password;
-    private Long languageId;
+    private String refreshToken;
 }

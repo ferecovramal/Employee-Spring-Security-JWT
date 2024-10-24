@@ -1,11 +1,13 @@
 package net.javaguides.java_ems.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import net.javaguides.java_ems.Util.JwtUtil;
 import net.javaguides.java_ems.entity.Employee;
 import net.javaguides.java_ems.repository.EmployeeRepository;
 import net.javaguides.java_ems.dto.AuthRequest;
 import net.javaguides.java_ems.dto.AuthResponse;
 import net.javaguides.java_ems.dto.RegisterRequest;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ public class AuthService {
 
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
     public void register(RegisterRequest request) {
         Employee employee = new Employee();
@@ -31,6 +35,22 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        return new AuthResponse("mock_token");
+        String token = jwtUtil.generateToken(employee.getEmail());
+        String refreshToken = jwtUtil.generateRefreshToken(employee.getEmail());
+
+        employee.setRefreshToken(refreshToken);
+        employeeRepository.save(employee);
+
+        return new AuthResponse(token, refreshToken);
     }
+
+    public AuthResponse refresh(String refreshToken){
+        String email = jwtUtil.extractUsername(refreshToken);
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        String newAccessToken = jwtUtil.generateToken(email);
+
+        return new AuthResponse(newAccessToken, refreshToken);
+    }
+
 }

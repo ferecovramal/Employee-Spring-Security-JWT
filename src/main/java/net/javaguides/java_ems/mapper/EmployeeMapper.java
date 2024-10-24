@@ -15,7 +15,7 @@ public class EmployeeMapper {
                 employee.getSalary(),
                 employee.getPhoneNumber(),
                 employee.getPassword(),
-                employee.getLanguage().getId()
+                employee.getRefreshToken()
         );
     }
 

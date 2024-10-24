@@ -2,8 +2,6 @@ package net.javaguides.java_ems.controller;
 
 import lombok.AllArgsConstructor;
 import net.javaguides.java_ems.dto.EmployeeDto;
-import net.javaguides.java_ems.entity.Employee;
-import net.javaguides.java_ems.entity.Language;
 import net.javaguides.java_ems.service.EmployeeService;
 import net.javaguides.java_ems.service.LanguageService;
 import org.springframework.http.HttpStatus;
@@ -11,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -28,6 +26,7 @@ public class EmployeeController {
         EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
+
     @GetMapping("/employees/search")
     public ResponseEntity<List<EmployeeDto>> searchEmployeesByWork(@RequestParam String work){
       List<EmployeeDto> employees =  employeeService.searchEmployeesByWork(work);
@@ -81,19 +80,18 @@ public class EmployeeController {
         EmployeeDto employeeDto = employeeService.updateEmployee(employeeId, updateEmployee);
         return ResponseEntity.ok(employeeDto);
     }
+    @PutMapping("/employees/{id}/password")
+    public ResponseEntity<String> updateEmployeePassword(@PathVariable Long id,
+                                                         @RequestParam Map<String , String> request){
+        String newPassword = request.get("password");
+        employeeService.updateEmployeePassword(id,newPassword);
+        return ResponseEntity.ok("Password updated successfully!");
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId){
         employeeService.deleteEmployee(employeeId);
         return ResponseEntity.ok("Employee deleted succesfully.!");
-    }
-    @PostMapping("/{id}/language")
-    public ResponseEntity<Void> addLanguageToEmployee(@PathVariable Long id, @RequestParam Long languageId) {
-        employeeService.addLanguageToEmployee(id, languageId);
-        return ResponseEntity.ok().build();
-    }
-    @GetMapping("/language/{languageId}")
-    public List<Employee> getEmployeesByLanguageId(@PathVariable Long languageId) {
-        return employeeService.findEmployeesByLanguageId(languageId);
     }
 
 }

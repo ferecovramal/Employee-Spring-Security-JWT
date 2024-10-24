@@ -42,9 +42,8 @@ public class Employee {
     @Column(name = "password")
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "language_id")
-    private Language language;
+    @Column(name = "refresh_token")
+    private String refreshToken;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<Address> addresses;

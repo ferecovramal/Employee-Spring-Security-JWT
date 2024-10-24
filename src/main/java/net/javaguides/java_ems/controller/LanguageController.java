@@ -1,6 +1,5 @@
 package net.javaguides.java_ems.controller;
 
-import jakarta.persistence.Id;
 import net.javaguides.java_ems.dto.LanguageDTO;
 import net.javaguides.java_ems.service.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +18,6 @@ public class LanguageController {
     public ResponseEntity<LanguageDTO> createLanguage(@RequestBody LanguageDTO languageDTO) {
         LanguageDTO savedLanguage = languageService.createLanguage(languageDTO);
         return new ResponseEntity<>(savedLanguage, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/{employeeId}/languages/{languageId}")
-    public ResponseEntity<Void> addLanguageToEmployee(@PathVariable Long employeeId,
-                                                      @PathVariable Long languageId) {
-        languageService.addLanguagesToEmployee(employeeId, languageId);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
